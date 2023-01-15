@@ -20,7 +20,7 @@ const TodoList: React.FC<Props> = ({ todos, setTodos, completedTodos, setComplet
                         <span className="todos__heading">Active Tasks</span>
                         {
                             todos.length > 0 ?
-                            todos.map((todo, index) => (
+                            todos.map((todo, index) => (                                
                                 <SingleTodo index={index} todo={todo} todos={todos} setTodos={setTodos}/>)
                                     
                             )

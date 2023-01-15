@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import InputField from './components/InputField';
 import { Todo } from './models';
@@ -47,7 +47,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <DragDropContext onDragEnd={(result) => {OnDragEnd(result)}}>
+    <DragDropContext onDragEnd={OnDragEnd}>
       <div className="App">
         <span className='heading'>Tasklify</span>
         <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
