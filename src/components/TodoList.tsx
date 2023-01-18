@@ -21,7 +21,15 @@ const TodoList: React.FC<Props> = ({ todos, setTodos, completedTodos, setComplet
                         {
                             todos.length > 0 ?
                             todos.map((todo, index) => (                                
-                                <SingleTodo index={index} todo={todo} todos={todos} setTodos={setTodos}/>)
+                                <SingleTodo
+                                    key={todo.id} 
+                                    index={index} 
+                                    todo={todo} 
+                                    todos={todos} 
+                                    setTodos={setTodos}
+                                    completedTodos={completedTodos} 
+                                    setCompletedTodos={setCompletedTodos} 
+                                />)
                                     
                             )
                             :
@@ -41,7 +49,15 @@ const TodoList: React.FC<Props> = ({ todos, setTodos, completedTodos, setComplet
                         {
                             completedTodos.length > 0 ?
                             completedTodos.map((todo, index) => (
-                                <SingleTodo index={index} todo={todo} todos={completedTodos} setTodos={setCompletedTodos}/>)
+                                <SingleTodo
+                                    key={todo.id} 
+                                    index={index} 
+                                    todo={todo} 
+                                    todos={todos} 
+                                    setTodos={setTodos}
+                                    completedTodos={completedTodos} 
+                                    setCompletedTodos={setCompletedTodos} 
+                                />)
                             )
                             :
                             "No completed todos added yet."

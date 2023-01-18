@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Todo } from '../models'
 import { AiFillEdit, AiFillDelete } from "react-icons/ai"
-import { MdDone, MdClose } from "react-icons/md"
+import { MdDone, MdClose, MdOutlineDoneAll } from "react-icons/md"
 import { Draggable } from "react-beautiful-dnd"
 
 type Props = {
@@ -9,25 +9,40 @@ type Props = {
     todo: Todo
     todos: Todo[]
     setTodos: React.Dispatch<React.SetStateAction<Todo[]>>
+    completedTodos: Todo[]
+    setCompletedTodos: React.Dispatch<React.SetStateAction<Todo[]>>
 }
 
-const SingleTodo: React.FC<Props> = ({index, todo, todos, setTodos}) => {
+const SingleTodo: React.FC<Props> = ({index, todo, todos, setTodos, completedTodos, setCompletedTodos}) => {
 
     const [edit, setEdit] = useState<boolean>(false)
     const [editTodo, setEditTodo] = useState<string>(todo.todo)
     const inputRef = useRef<HTMLInputElement>(null)
 
-    // const handlDone = (id: number | undefined) => {
-    //     setTodos(
-    //         todos.map(
-    //             todo => todo.id === id ? {...todo, isDone:!todo.isDone } : todo
-    //         )
-    //     )
-    // }
+    const handleDone = (id: number) => {
+        let add;
+        
+        add = todos.filter(todo => todo.id === id)[0]
+        if (!add)
+            add = completedTodos.filter(todo => todo.id === id)[0]
+        
+        handleDelete(id)
+        
+        if (add.isDone)
+            setTodos([...todos, {...add, isDone:false}])
+        else
+            setCompletedTodos([...completedTodos, {...add, isDone:true}])
+        
+    }
 
-    const handlDelete = (id: number) => {
+    const handleDelete = (id: number) => {
         setTodos(
             todos.filter(
+                todo => todo.id !== id
+            )
+        )
+        setCompletedTodos(
+            completedTodos.filter(
                 todo => todo.id !== id
             )
         )
@@ -42,12 +57,9 @@ const SingleTodo: React.FC<Props> = ({index, todo, todos, setTodos}) => {
         )
         setEdit(false)
     }
-    useEffect(() => {
-        inputRef.current?.focus()
-    }, [edit])
 
   return (
-    <Draggable key={todo.id.toString()} draggableId={todo.id.toString()} index={index}>
+    <Draggable key={todo.id} draggableId={todo.id.toString()} index={index}>
         {
             (provided, snapshot) => (
                 <form 
@@ -81,15 +93,8 @@ const SingleTodo: React.FC<Props> = ({index, todo, todos, setTodos}) => {
                     <div>
                         {
                             edit ? (
-                            <button className='button__icon' type='submit'>
-                                {
-                                    todo.isDone ? (
-                                        <MdClose />
-                                    ) : (
-                                        <MdDone />
-                                    )
-                                }
-                                
+                            <button className='button__icon' type='submit' title='Submit'>
+                                <MdDone />
                             </button>
                             ): (
                                <></> 
@@ -104,15 +109,36 @@ const SingleTodo: React.FC<Props> = ({index, todo, todos, setTodos}) => {
                                         } 
                                     }
                                 }>
-                                    <AiFillEdit />
+                                    <AiFillEdit title='Edit task'/>
                                 </span>
                             ):(
                                 <></>
                             )
-                        } 
+                        }
+
+                        {
+                            todo.isDone ? (
+                                <span className='icon' onClick={
+                                    () => handleDone(todo.id)
+                                }>
+                                    <MdClose title='Move to active'/>
+                                </span>
+                                
+                            ) : (
+                                !edit ? (
+                                    <span className='icon' onClick={
+                                        () => handleDone(todo.id)
+                                    }>
+                                        <MdOutlineDoneAll title='Move to completed' />
+                                    </span>
+                                ): (
+                                    <></>
+                                )
+                            )
+                        }
                         
-                        <span className='icon' onClick={() => handlDelete(todo.id)}>
-                            <AiFillDelete />
+                        <span className='icon' onClick={() => handleDelete(todo.id)}>
+                            <AiFillDelete title='Delete todo'/>
                         </span>
                     </div>
                 </form>
